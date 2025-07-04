@@ -24,6 +24,7 @@ app.use(cors({
   origin: 'http://localhost:5173',
 }));
 
+
 // API Routes
 app.get('/', (req, res) => {
   res.send("Task Manager server is working");
