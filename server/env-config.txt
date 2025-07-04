@@ -1,0 +1,11 @@
+# Copy this content to a new file named .env in the server directory
+
+MongoDB Configuration
+MONGO_URI=mongodb://localhost:27017
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_here
+
+# Server Configuration
+PORT=4000
+NODE_ENV=development 
