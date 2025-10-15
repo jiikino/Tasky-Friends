@@ -46,7 +46,7 @@ export const getTasks = async (req, res) => {
 // update task so my frontend can update my tasks
 export const updateTask = async (req, res) => {
     const {taskid} = req.params; // this is the :id from your URL
-    const {title, description, dueDate, priority, category} = req.body;
+    const {title, description, dueDate, priority, category, completed} = req.body;
 
     try {
         // Find the task that belongs to this user & has this ID
@@ -57,11 +57,12 @@ export const updateTask = async (req, res) => {
         }
 
         // Update the task with the new data
-        task.title = title || task.title;
-        task.description = description || task.description;
-        task.dueDate = dueDate || task.dueDate;
-        task.priority = priority || task.priority;
-        task.category = category || task.category;
+        if (title !== undefined) task.title = title;
+        if (description !== undefined) task.description = description;
+        if (dueDate !== undefined) task.dueDate = dueDate;
+        if (priority !== undefined) task.priority = priority;
+        if (category !== undefined) task.category = category;
+        if (completed !== undefined) task.completed = completed;
 
         await task.save();
 
