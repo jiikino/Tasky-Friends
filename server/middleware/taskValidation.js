@@ -12,18 +12,14 @@ export const validateTaskCreation = (req, res, next) => {
         errors.push("Title must be less than 100 characters");
     }
 
-    // Description validation
-    if (!description || description.trim().length === 0) {
-        errors.push("Description is required");
-    } else if (description.length > 500) {
+    // Description validation (optional)
+    if (description && description.length > 500) {
         errors.push("Description must be less than 500 characters");
     }
 
     // Due date validation
     if (!dueDate) {
         errors.push("Due date is required");
-    } else if (new Date(dueDate) < new Date()) {
-        errors.push("Due date cannot be in the past");
     }
 
     // Priority validation
@@ -50,7 +46,7 @@ export const validateTaskCreation = (req, res, next) => {
 
     // Sanitize inputs
     req.body.title = title.trim();
-    req.body.description = description.trim();
+    if (description) req.body.description = description.trim();
     req.body.category = category.trim();
 
     next();

@@ -20,7 +20,7 @@ taskRouter.use(userAuth);
 taskRouter.use(taskRateLimiter);
 
 // Create a new task
-taskRouter.post('/create', taskCreationRateLimiter, validateTaskCreation, createTask);
+taskRouter.post('/', taskCreationRateLimiter, validateTaskCreation, createTask);
 
 // Get all tasks for the authenticated user
 taskRouter.get('/', getTasks);

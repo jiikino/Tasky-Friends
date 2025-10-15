@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     isAccountVerified: { type: Boolean, default: false },
     resetPasswordOtp: { type: String, default: '' },
     resetPasswordOtpExpiresAt: { type: Number, default: 0 },
+    pet: { type: String, default: '' },
 
 
     

@@ -1,58 +1,62 @@
-import React, { useState } from 'react';
-// import axios from 'axios'; // TODO: Uncomment when backend is ready
-import { useNavigate } from 'react-router-dom';
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
-// axios.defaults.withCredentials = true; // TODO: Uncomment when backend is ready
-
-const LoginPage = () => {
-  const navigate = useNavigate();
+export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // TODO: Uncomment when backend is ready
-    /*
+    setLoading(true);
+
     try {
-      const res = await axios.post('/api/auth/login', { email, password });
-      if (res.data.success) {
-        navigate('/dashboard');
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success('Login successful!');
+        router.push('/dashboard');
       } else {
-        setMessage(res.data.message);
+        toast.error(data.message || 'Login failed');
       }
-    } catch (err) {
-      console.error(err);
-      setMessage("Something went wrong. Please try again.");
-    }
-    */
-    
-    // TEMPORARY: For frontend testing only
-    if (email && password) {
-      navigate('/dashboard');
-    } else {
-      setMessage("Please fill in all fields");
+    } catch (error: any) {
+      toast.error('Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   // Floating emojis for login page
-  const loginEmojis = ['🔐', '', '', '', '✨', '🎨', '', ''];
+  const loginEmojis = ['🔐', '📝', '✅', '🎯', '✨', '🎨', '💕', '🌟'];
 
   return (
     <motion.div 
-      className="flex items-center justify-center h-screen bg-gradient-to-b from-purple-50 to-pink-50 p-6"
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#fce7f3] to-[#f9a8d4] p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       {/* Floating emojis background */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {loginEmojis.map((emoji, i) => (
           <motion.div
             key={i}
-            className="absolute text-purple-300 text-xl"
+            className="absolute text-white/30 text-xl"
             style={{
               left: `${15 + i * 10}%`,
               top: `${10 + i * 15}%`,
@@ -93,29 +97,18 @@ const LoginPage = () => {
             className="text-3xl mb-2"
             animate={{ 
               rotate: [0, 10, -10, 0],
-              transition: {
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
           >
-            
+            👋
           </motion.div>
-          <h1 className="text-2xl font-bold text-purple-800 font-fredoka">Hey there, friend! 👋</h1>
-          <p className="text-purple-600 text-sm mt-1 font-quicksand">Ready to tackle some tasks together?</p>
+          <h1 className="text-2xl font-bold text-pink-800">Hey there, friend!</h1>
+          <p className="text-pink-600 text-sm mt-1">Ready to tackle some tasks together?</p>
         </motion.div>
-
-        {message && (
-          <motion.div 
-            className="bg-red-100 text-red-700 p-3 rounded mb-4 font-quicksand"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            {message}
-          </motion.div>
-        )}
 
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -127,7 +120,7 @@ const LoginPage = () => {
             placeholder="Your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full mb-4 p-3 border border-purple-200 rounded focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all duration-200 font-quicksand"
+            className="w-full mb-4 p-3 border border-pink-200 rounded focus:outline-none focus:ring-2 focus:ring-pink-300 transition-all duration-200"
             required
           />
         </motion.div>
@@ -142,43 +135,40 @@ const LoginPage = () => {
             placeholder="Your secret password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-6 p-3 border border-purple-200 rounded focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all duration-200 font-quicksand"
+            className="w-full mb-6 p-3 border border-pink-200 rounded focus:outline-none focus:ring-2 focus:ring-pink-300 transition-all duration-200"
             required
           />
         </motion.div>
 
         <motion.button 
           type="submit"
-          className="w-full bg-purple-500 text-white py-3 rounded-full shadow hover:bg-purple-600 transition-colors duration-200 font-fredoka font-semibold"
+          disabled={loading}
+          className="w-full bg-pink-500 text-white py-3 rounded-full shadow hover:bg-pink-600 transition-colors duration-200 font-semibold disabled:opacity-50"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(147, 51, 234, 0.3)" }}
+          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(236, 72, 153, 0.3)" }}
           whileTap={{ scale: 0.95 }}
         >
-          Let's Go! ✨
+          {loading ? 'Logging in...' : "Let's Go! ✨"}
         </motion.button>
 
         <motion.p 
-          className="text-center mt-4 text-gray-600 font-quicksand"
+          className="text-center mt-4 text-gray-600"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
           New around here?{' '}
-          <motion.button 
-            type="button"
-            onClick={() => navigate('/signup')}
-            className="text-purple-600 hover:underline font-semibold"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <Link 
+            href="/signup"
+            className="text-pink-600 hover:underline font-semibold"
           >
             Create your account
-          </motion.button>
+          </Link>
         </motion.p>
       </motion.form>
     </motion.div>
   );
-};
+}
 
-export default LoginPage; 
